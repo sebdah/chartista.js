@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChartistaJS test</title>
+</head>
+<body>
+<canvas id="testCanvas" width="600" height="400"></canvas>
+<script type="text/javascript" src="chartista.js"></script>
+<script type="text/javascript">
+    var config = {
+        backgroundColor : "#000000",
+        padding : 2,
+        labels : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets : [
+            /*{
+                fill : true,
+                fillStyle : "rgba(220,100,220,0.5)",
+                strokeStyle : "rgba(220,100,220,1)",
+                data : [235, 150, 183, 341, 234, 150, 20]
+            },*/
+            {
+                fill : false,
+                fillStyle : "rgba(220,220,220,0.5)",
+                strokeStyle : "rgba(220,220,220,1)",
+                data : [300, 59, 90, 81, 56, 55, 40]
+            }
+        ]
+    }
+
+    chartista = new ChartistaJS("testCanvas", config, 'DEBUG');
+    chartista.lineChart();
+</script>
+</body>
+</html>
