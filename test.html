@@ -3,12 +3,12 @@
 <head>
     <title>ChartistaJS test</title>
 </head>
-<body>
+<body bgcolor="#333">
 <canvas id="testCanvas" width="600" height="400"></canvas>
 <script type="text/javascript" src="chartista.js"></script>
 <script type="text/javascript">
     var config = {
-        backgroundColor : "#000000",
+        backgroundColor : "#111111",
         padding : 2,
         labels : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
         datasets : [
@@ -20,8 +20,9 @@
             },*/
             {
                 fill : true,
-                fillStyle : "rgba(220,220,220,0.5)",
-                strokeStyle : "rgba(220,220,220,1)",
+                fillStyle : "rgba(0,255,0,0.5)",
+                lineWidth : 2,
+                strokeStyle : "rgba(0,255,0,1)",
                 data : [300, 59, 90, 81, 56, 55, 40]
             }
         ]

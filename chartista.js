@@ -61,18 +61,6 @@ ChartistaJS.prototype.lineChart = function() {
 
     dataset = this.config.datasets[i];
 
-    // Set the starting point for X
-    startX = parseFloat(((this.canvas.width - graphWidth) - this.config['padding']).toFixed(2));
-    xStepSize = parseFloat((graphWidth / (dataset.data.length - 1)).toFixed(2));
-
-    // Begin the rendering
-    this.ctx.beginPath();
-    this.ctx.strokeStyle = typeof dataset['strokeStyle'] !== 'undefined' ? dataset['strokeStyle'] : '#ffffff';
-    this.ctx.lineWidth = typeof dataset['lineWidth'] !== 'undefined' ? dataset['lineWidth'] : 2;
-
-    // Reset x
-    x = startX;
-
     // Calculate the data points
     points = []
     for (var j = 0; j < this.config['labels'].length; j++) {
@@ -83,32 +71,12 @@ ChartistaJS.prototype.lineChart = function() {
     }
     this.logDebug('points', points);
 
-    // Render each data point
-    this.ctx.moveTo(points[0].x, points[0].y);
-    for (var j = 1; j < points.length; j++) { this.ctx.lineTo(points[j].x, points[j].y); }
-    this.ctx.stroke();
+    // Render the line
+    renderLine(this.ctx, points);
 
     // Fill the graph
     if (typeof dataset['fill'] !== 'undefined' ? dataset['fill'] : true) {
-      // Begin the rendering
-      this.ctx.beginPath();
-      this.ctx.strokeStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
-      this.ctx.lineWidth = 0.1;
-
-      // Render each data point
-      this.ctx.moveTo(points[0].x, points[0].y);
-      for (var j = 1; j < points.length; j++) { this.ctx.lineTo(points[j].x, points[j].y); }
-      this.ctx.stroke();
-
-      // Make the graph complete
-      this.ctx.lineTo(points[points.length - 1].x, graphHeight);
-      this.ctx.lineTo(points[0].x, graphHeight);
-      this.ctx.lineTo(points[0].x, points[0].y);
-      this.ctx.stroke();
-
-      // Fill the graph
-      this.ctx.fillStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
-      this.ctx.fill();
+      fillLineBackground(this.ctx, points);
     }
   }
 
@@ -121,6 +89,46 @@ ChartistaJS.prototype.lineChart = function() {
         if (dataset.data[j] < minValue) { minValue = dataset.data[j]; }
       }
     }
+  }
+
+  // Render the actual line
+  function renderLine (ctx, points) {
+    // Render each data point
+    ctx.beginPath();
+    ctx.strokeStyle = typeof dataset['strokeStyle'] !== 'undefined' ? dataset['strokeStyle'] : '#ffffff';
+    ctx.lineWidth = typeof dataset['lineWidth'] !== 'undefined' ? dataset['lineWidth'] : 2;
+    ctx.moveTo(points[0].x, points[0].y);
+
+    for (var j = 1; j < points.length; j++) {
+      ctx.lineTo(points[j].x, points[j].y);
+    }
+
+    ctx.stroke();
+  }
+
+  // Fill the background
+  function fillLineBackground (ctx, points) {
+    // Begin the rendering
+    ctx.beginPath();
+    ctx.strokeStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
+    ctx.lineWidth = 0.1;
+
+    // Render each data point
+    ctx.moveTo(points[0].x, points[0].y);
+    for (var j = 1; j < points.length; j++) {
+      ctx.lineTo(points[j].x, points[j].y);
+    }
+    ctx.stroke();
+
+    // Make the graph complete
+    ctx.lineTo(points[points.length - 1].x, graphHeight);
+    ctx.lineTo(points[0].x, graphHeight);
+    ctx.lineTo(points[0].x, points[0].y);
+    ctx.stroke();
+
+    // Fill the graph
+    ctx.fillStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
+    ctx.fill();
   }
 };
 
