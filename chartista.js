@@ -73,6 +73,7 @@ ChartistaJS.prototype.lineChart = function() {
     // Reset x
     x = startX;
 
+    // Calculate the data points
     points = []
     for (var j = 0; j < this.config['labels'].length; j++) {
       points.push({
@@ -80,54 +81,29 @@ ChartistaJS.prototype.lineChart = function() {
         'y': parseFloat((graphHeight - (dataset.data[j] * scale)).toFixed(2))
       })
     }
-
     this.logDebug('points', points);
 
     // Render each data point
     this.ctx.moveTo(points[0].x, points[0].y);
-    for (var j = 1; j < points.length - 2; j++) {
-      var xc = (points[j].x + points[j+1].x) / 2;
-      var yc = (points[j].y + points[j+1].y) / 2;
-      this.ctx.quadraticCurveTo(points[j].x, points[j].y, xc, yc);
-    }
-    this.ctx.quadraticCurveTo(points[j].x, points[j].y, points[j+1].x,points[j+1].y);
+    for (var j = 1; j < points.length; j++) { this.ctx.lineTo(points[j].x, points[j].y); }
     this.ctx.stroke();
 
     // Fill the graph
     if (typeof dataset['fill'] !== 'undefined' ? dataset['fill'] : true) {
-      // Reset x
-      x = startX;
-
       // Begin the rendering
       this.ctx.beginPath();
       this.ctx.strokeStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
       this.ctx.lineWidth = 0.1;
 
       // Render each data point
-      for (var j = 1; j < this.config['labels'].length - 2; j++) {
-        // Calulate y
-        y = parseFloat((graphHeight - (dataset.data[j] * scale)).toFixed(2));
-        this.logDebug('Rendering datapoint (' + x + ',' + y + ')');
-
-        // Render line
-        if (j == 0) {
-          this.ctx.moveTo(x, y);
-        } else {
-          this.ctx.lineTo(x, y);
-        }
-
-        // Calculate next X
-        if (j + 1 < this.config['labels'].length) {
-          x += xStepSize;
-          x = parseFloat(x.toFixed(2));
-        }
-      }
+      this.ctx.moveTo(points[0].x, points[0].y);
+      for (var j = 1; j < points.length; j++) { this.ctx.lineTo(points[j].x, points[j].y); }
       this.ctx.stroke();
 
       // Make the graph complete
-      this.ctx.lineTo(x, graphHeight);
-      this.ctx.lineTo(startX, graphHeight);
-      this.ctx.lineTo(startX, parseFloat((graphHeight - (dataset.data[0] * scale)).toFixed(2)));
+      this.ctx.lineTo(points[points.length - 1].x, graphHeight);
+      this.ctx.lineTo(points[0].x, graphHeight);
+      this.ctx.lineTo(points[0].x, points[0].y);
       this.ctx.stroke();
 
       // Fill the graph
