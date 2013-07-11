@@ -43,6 +43,7 @@ ChartistaJS.prototype.lineChart = function() {
   var scale = 0;
   var maxValue = 0;
   var minValue = 0;
+  var ctx = this.ctx;
 
   // Render the background
   this.renderBackground();
@@ -62,7 +63,7 @@ ChartistaJS.prototype.lineChart = function() {
     dataset = this.config.datasets[i];
 
     // Calculate the data points
-    points = []
+    var points = []
     for (var j = 0; j < this.config['labels'].length; j++) {
       points.push({
         'x': xLabelHeight + graphWidth / (this.config['labels'].length - 1) * (j + 1),
@@ -72,11 +73,12 @@ ChartistaJS.prototype.lineChart = function() {
     this.logDebug('points', points);
 
     // Render the line
-    renderLine(this.ctx, points);
+    renderLine();
+    renderDots();
 
     // Fill the graph
     if (typeof dataset['fill'] !== 'undefined' ? dataset['fill'] : true) {
-      fillLineBackground(this.ctx, points);
+      fillLineBackground();
     }
   }
 
@@ -92,7 +94,7 @@ ChartistaJS.prototype.lineChart = function() {
   }
 
   // Render the actual line
-  function renderLine (ctx, points) {
+  function renderLine () {
     // Render each data point
     ctx.beginPath();
     ctx.strokeStyle = typeof dataset['strokeStyle'] !== 'undefined' ? dataset['strokeStyle'] : '#ffffff';
@@ -107,7 +109,7 @@ ChartistaJS.prototype.lineChart = function() {
   }
 
   // Fill the background
-  function fillLineBackground (ctx, points) {
+  function fillLineBackground () {
     // Begin the rendering
     ctx.beginPath();
     ctx.strokeStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
@@ -129,6 +131,25 @@ ChartistaJS.prototype.lineChart = function() {
     // Fill the graph
     ctx.fillStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
     ctx.fill();
+  }
+
+  function renderDots () {
+    if (typeof dataset['dots'] !== 'undefined' ? dataset['dots'] : true) {
+      ctx.beginPath();
+      for (var j = 0; j < points.length; j++) {
+        ctx.arc(
+          points[j].x,
+          points[j].y,
+          typeof dataset['dotSize'] !== 'undefined' ? dataset['dotSize'] : 5,
+          0,
+          Math.PI*2,
+          true);
+      }
+      ctx.closePath();
+
+      ctx.fillStyle = typeof dataset['fillStyle'] !== 'undefined' ? dataset['fillStyle'] : '#ffffff';
+      ctx.fill();
+    }
   }
 };
 
