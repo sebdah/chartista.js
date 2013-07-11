@@ -77,7 +77,7 @@ ChartistaJS.prototype.lineChart = function() {
     points = []
     for (var j = 0; j < this.config['labels'].length; j++) {
       points.push({
-        'x': parseFloat(((this.canvas.width - graphWidth) - this.config['padding']).toFixed(2)) * (j+1),
+        'x': xLabelHeight + graphWidth / (this.config['labels'].length - 1) * (j + 1),
         'y': parseFloat((graphHeight - (dataset.data[j] * scale)).toFixed(2))
       })
     }
